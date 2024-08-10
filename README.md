@@ -1,5 +1,5 @@
 # smokeping-config-gen
-a Python script that generates configuration files SmokePing
+a Python script that generates configuration files for SmokePing
 
 ## How to Use
 ```py_directory/
