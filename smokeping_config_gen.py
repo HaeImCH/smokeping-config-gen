@@ -15,7 +15,7 @@ def read_category_files(directory):
     data = []
     for filename in os.listdir(directory):
         if filename.endswith('.txt'):
-            category_name = os.path.splitext(filename)[0]
+            category_name = os.path.splitext(filename)[0].replace('.', '-')
             file_path = os.path.join(directory, filename)
             try:
                 lines = read_file_with_fallback(file_path)
@@ -51,7 +51,8 @@ def generate_category_section(item):
     category_section = []
     category_section.append(f"++ {item['name']}")
     category_section.append(f"title = {item['title']}")
-    host_list = [f"/v6Test/{item['name']}/{display_name}" for display_name, _ in item['hosts']]
+    category_section.append(f"menu = {item['title']}")
+    host_list = [f"/v6Test/{item['name']}/{display_name.replace('.', '-')}" for display_name, _ in item['hosts']]
     category_section.append(f"host = {' '.join(host_list)}")
     return category_section
 
@@ -59,7 +60,8 @@ def generate_host_section(display_name, actual_host):
     host_section = []
     # Generate the title with the format: "{display_name} - {actual_host}"
     title = f"{display_name} - {actual_host}" if display_name != actual_host else display_name
-    host_section.append(f"+++ {display_name}")
+    host_section.append(f"+++ {display_name.replace('.', '-')}")
+    host_section.append(f"menu = {display_name}")
     host_section.append(f"title = {title}")
     host_section.append(f"host = {actual_host}")
     host_section.append("")
@@ -84,12 +86,11 @@ def generate_config(data, slaves_list):
 
     return "\n".join(config)
 
-# Main execution
 if __name__ == "__main__":
     try:
         category_dir = './category'
         #slaves_list = ['CHv6', 'anotherone', 'apple', 'banana']
-        slaves_list = ['CHv6']
+        slaves_list = []
         data = read_category_files(category_dir)
         config = generate_config(data, slaves_list)
         print(config)
